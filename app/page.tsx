@@ -5,6 +5,7 @@ import HeroFilm from './components/HeroFilm';
 import Categories from './components/Categories';
 import Reveal from './components/Reveal';
 import ApplyForm from './components/ApplyForm';
+import Questions from './components/Questions';
 import { categories, questions } from './content';
 
 export default function Home() {
@@ -27,7 +28,7 @@ export default function Home() {
                 <span className="tick" style={{ left: '66.6%' }} />
                 <span className="tick" style={{ right: 0 }} />
               </div>
-              <div className="hero-foot" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              <div className="hero-foot">
                 <p className="t-lead">A private house of 500 members. Your wardrobe made to your measure every month, and a welcome among peers wherever you go. By invitation only.</p>
                 <div className="actions">
                   <a className="btn btn-solid" href="#apply">Apply for membership</a>
@@ -97,7 +98,7 @@ export default function Home() {
             </div>
             <div className="footnote">
               <p className="fit t-sub">If a garment does not fit as it should, we alter or remake it.</p>
-              <p>Founding members, who joined before the house opened, keep their founding number and status for as long as they remain members.</p>
+              <p className="founding">Founding members, who joined before the house opened, keep their founding number and status for as long as they remain members.</p>
             </div>
           </div>
         </section>
@@ -149,22 +150,15 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="section paper" aria-labelledby="h-q" style={{ paddingTop: 0 }}>
+        <section className="section paper questions" aria-labelledby="h-q">
           <div className="wrap split">
             <h2 id="h-q" className="t-section">Questions</h2>
-            <div className="faq">
-              {questions.map((g) => (
-                <div key={g.group}>
-                  <p className="q-group">{g.group}</p>
-                  {g.items.map((q) => (<details key={q.q}><summary>{q.q}</summary><p>{q.a}</p></details>))}
-                </div>
-              ))}
-            </div>
+            <Questions groups={questions} />
           </div>
         </section>
 
         <section className="section indigo" id="apply" aria-labelledby="h-apply">
-          <div className="wrap split">
+          <div className="wrap split split-apply">
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               <h2 id="h-apply" className="t-section">Apply for membership</h2>
               <p>The house reviews every application personally and replies within one business day.</p>

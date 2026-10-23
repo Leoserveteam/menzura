@@ -20,13 +20,17 @@ function CategoryRow({ c, initiallyOpen, registerVideo }: { c: Category; initial
         <p className="t-scene">{c.scene}</p>
         <button className="toggle" type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>
           What’s included
-          <img src="/images/chevron.svg" alt="" width={14} height={14} />
+          <img className="chev" src="/images/chevron.svg" alt="" width={14} height={14} />
         </button>
-        <ul className="benefits" id={id} hidden={!open}>
-          {c.items.map((b) => (
-            <li key={b.text}><span>{b.text}{b.principal && <span className="tag">Principal</span>}</span></li>
-          ))}
-        </ul>
+        <div className="panel" id={id} data-open={open}>
+          <div>
+            <ul className="benefits">
+              {c.items.map((b) => (
+                <li key={b.text}><span>{b.text}</span>{b.principal && <span className="tag">Principal</span>}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </article>
   );
