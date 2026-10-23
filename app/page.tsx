@@ -8,6 +8,9 @@ import ApplyForm from './components/ApplyForm';
 import Questions from './components/Questions';
 import { categories, questions } from './content';
 
+// Rendered width of the traditions photos: 490px on desktop, half the content on tablet, full width on mobile.
+const photoSizes = '(max-width: 720px) calc(100vw - 98px), (max-width: 1100px) calc(50vw - 92px), 490px';
+
 export default function Home() {
   return (
     <>
@@ -124,13 +127,21 @@ export default function Home() {
             <h2 id="h-trad" className="t-section" style={{ maxWidth: 560 }}>Two traditions, one standard.</h2>
             <div className="cards">
               <figure className="card">
-                <img src="/images/tradition-boardroom.jpg" alt="A man in a navy suit standing in a quiet stone hallway" width={1152} height={928} loading="lazy" />
+                <picture>
+                  <source type="image/avif" srcSet="/images/tradition-boardroom-576.avif 576w, /images/tradition-boardroom-1152.avif 1152w" sizes={photoSizes} />
+                  <source type="image/webp" srcSet="/images/tradition-boardroom-576.webp 576w, /images/tradition-boardroom-1152.webp 1152w" sizes={photoSizes} />
+                  <img src="/images/tradition-boardroom.jpg" alt="A man in a navy suit standing in a quiet stone hallway" width={1152} height={928} loading="lazy" />
+                </picture>
                 <p className="caption">Front, cut two</p>
                 <h3 className="t-card">The Boardroom</h3>
                 <p>Suits, dinner jackets and overcoats for the life you lead.</p>
               </figure>
               <figure className="card">
-                <img src="/images/tradition-heritage.jpg" alt="A seated man in a cream agbada and cap in a dark, book-lined room" width={1152} height={928} loading="lazy" />
+                <picture>
+                  <source type="image/avif" srcSet="/images/tradition-heritage-576.avif 576w, /images/tradition-heritage-1152.avif 1152w" sizes={photoSizes} />
+                  <source type="image/webp" srcSet="/images/tradition-heritage-576.webp 576w, /images/tradition-heritage-1152.webp 1152w" sizes={photoSizes} />
+                  <img src="/images/tradition-heritage.jpg" alt="A seated man in a cream agbada and cap in a dark, book-lined room" width={1152} height={928} loading="lazy" />
+                </picture>
                 <p className="caption">Body, cut one on the fold</p>
                 <h3 className="t-card">The Heritage</h3>
                 <p>Agbadas and kaftans for the occasions that matter most.</p>
