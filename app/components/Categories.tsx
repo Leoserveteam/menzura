@@ -13,7 +13,7 @@ function CategoryRow({ c, initiallyOpen, registerVideo }: { c: Category; initial
         <p className="t-promise">{c.promise}</p>
       </div>
       <div className="story">
-        <video ref={registerVideo} className="loop" muted loop playsInline preload="none" poster={`/images/loop-${c.key}.jpg`} aria-hidden="true" width={1280} height={720}>
+        <video ref={registerVideo} className="loop" muted loop playsInline preload="none" data-poster={`/images/loop-${c.key}.webp`} aria-hidden="true" width={1280} height={720}>
           <source src={`/motion/loop-${c.key}.webm`} type="video/webm" />
           <source src={`/motion/loop-${c.key}.mp4`} type="video/mp4" />
         </video>
@@ -38,6 +38,14 @@ function CategoryRow({ c, initiallyOpen, registerVideo }: { c: Category; initial
 
 export default function Categories({ items }: { items: Category[] }) {
   const videos = useRef<HTMLVideoElement[]>([]);
+  // Stills load only as a loop nears the screen, so they stay off the critical path.
+  useEffect(() => {
+    const show = (v: HTMLVideoElement) => { if (!v.poster && v.dataset.poster) v.poster = v.dataset.poster; };
+    if (!('IntersectionObserver' in window)) { videos.current.forEach(show); return; }
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { show(e.target as HTMLVideoElement); io.unobserve(e.target); } }), { rootMargin: '100% 0px' });
+    videos.current.forEach((v) => io.observe(v));
+    return () => io.disconnect();
+  }, []);
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     let ticking = false;
