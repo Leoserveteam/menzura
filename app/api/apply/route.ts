@@ -10,6 +10,8 @@ const hits = new Map<string, number[]>();
 function rateLimited(ip: string) {
   const now = Date.now(); const recent = (hits.get(ip) || []).filter((t) => now - t < 10 * 60_000);
   recent.push(now); hits.set(ip, recent);
+  // Forget idle addresses so a flood from many IPs cannot grow memory without bound.
+  if (hits.size > 5000) for (const [k, v] of hits) if (now - v[v.length - 1] > 10 * 60_000) hits.delete(k);
   return recent.length > 5;
 }
 
