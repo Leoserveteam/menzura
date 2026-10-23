@@ -84,8 +84,13 @@ button { font: inherit; color: inherit; }
 }
 
 /* Hero */
-.hero { padding-bottom: 96px; }
-.hero-grid { display: grid; grid-template-columns: 560px 1fr; gap: 60px; align-items: start; margin-top: 210px; }
+/* The film fills the hero behind the copy, under Figma's directional contrast overlay.
+   The overlay never drops below 62% Ink: the film has near-white title frames, and Bone text
+   needs that much Ink over white to keep 4.5:1 (WCAG 1.4.3). */
+.hero { position: relative; isolation: isolate; overflow: hidden; padding-bottom: 96px; }
+.hero-bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; max-width: none; object-fit: cover; background: var(--ink); }
+.hero-shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, color-mix(in srgb, var(--ink) 94%, transparent) 0%, color-mix(in srgb, var(--ink) 76%, transparent) 44%, color-mix(in srgb, var(--ink) 62%, transparent) 72%, color-mix(in srgb, var(--ink) 62%, transparent) 100%); }
+.hero-grid { display: grid; grid-template-columns: 560px; align-items: start; margin-top: 210px; }
 .hero-copy { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
 .hero-copy h1 { width: auto; }
 @media (min-width: 1101px) { .hero-copy h1 { width: 640px; } }
@@ -94,16 +99,14 @@ button { font: inherit; color: inherit; }
 .chalk .tick { position: absolute; top: 7px; width: 1px; height: 13px; background: var(--brass); }
 .hero-foot { display: flex; flex-direction: column; gap: 24px; margin-top: 25px; }
 .actions { display: flex; gap: 12px; flex-wrap: wrap; }
-/* Desktop: the film starts 39px above the headline, beside it */
-.film { width: 100%; max-width: 520px; justify-self: end; margin-top: -39px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius); background: #000; }
 @media (max-width: 1100px) {
   .hero { padding-bottom: 64px; }
-  .hero-grid { grid-template-columns: 1fr; margin-top: 324px; gap: 32px; }
+  .hero-shade { background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 62%, transparent) 0%, color-mix(in srgb, var(--ink) 62%, transparent) 30%, color-mix(in srgb, var(--ink) 82%, transparent) 44%, color-mix(in srgb, var(--ink) 94%, transparent) 70%, color-mix(in srgb, var(--ink) 97%, transparent) 100%); }
+  .hero-grid { grid-template-columns: 1fr; margin-top: 324px; }
   .hero-copy { gap: 0; }
   .chalk { width: min(100%, 342px); margin-top: 36px; }
   .hero-foot { gap: 28px; margin-top: 0; }
   .hero-foot .t-lead { max-width: 403px; }
-  .film { max-width: none; justify-self: stretch; margin-top: 0; }
 }
 @media (max-width: 600px) {
   .actions { flex-direction: column; }

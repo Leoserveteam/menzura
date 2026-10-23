@@ -16,6 +16,8 @@ export default function Home() {
     <>
       <StickyHeader />
       <header className="ink hero" id="top">
+        <HeroFilm />
+        <div className="hero-shade" aria-hidden="true" />
         <div className="wrap">
           <div className="top">
             <a href="#top" aria-label="Menzura, home"><Wordmark /></a>
@@ -39,7 +41,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <HeroFilm />
           </div>
         </div>
       </header>
