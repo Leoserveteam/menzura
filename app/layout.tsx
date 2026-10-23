@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 
 const cormorant = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400'], style: ['normal', 'italic'], variable: '--font-cormorant', display: 'swap' });
@@ -21,7 +22,11 @@ export const viewport: Viewport = { themeColor: '#111111', width: 'device-width'
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* Vercel Web Analytics: no cookies, no personal data */}
+        <Analytics />
+      </body>
     </html>
   );
 }
