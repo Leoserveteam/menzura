@@ -14,6 +14,13 @@ npm run dev
 "Menzura · Applications (private)", then emails the operator and the applicant (Resend).
 Set the variables in `.env.example` in Vercel (Project → Settings → Environment Variables).
 For previews, `APPLY_DRY_RUN=1` shows the confirmation without storing or sending anything.
+Setting it up for production (service account, Resend, DNS): see `docs/production-setup.md`.
+
+## Test
+npm run build
+npm test   # posts sample applications to /api/apply in dry-run mode
+
+`BASE_URL=https://<preview-url> npm test` runs the same checks against a deployed preview.
 
 ## Media
 `public/motion` holds the hero film and the five category loops (MP4 and WebM).
