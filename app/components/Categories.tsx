@@ -1,0 +1,64 @@
+'use client';
+/* eslint-disable @next/next/no-img-element */
+import { useEffect, useRef, useState } from 'react';
+import type { Category } from '../content';
+
+function CategoryRow({ c, initiallyOpen, registerVideo }: { c: Category; initiallyOpen: boolean; registerVideo: (v: HTMLVideoElement | null) => void }) {
+  const [open, setOpen] = useState(initiallyOpen);
+  const id = `incl-${c.key}`;
+  return (
+    <article className="cat">
+      <div className="cat-name">
+        <h3 className="t-card">{c.name}</h3>
+        <p className="t-promise">{c.promise}</p>
+      </div>
+      <div className="story">
+        <video ref={registerVideo} className="loop" muted loop playsInline preload="none" poster={`/images/loop-${c.key}.jpg`} aria-hidden="true" width={1280} height={720}>
+          <source src={`/motion/loop-${c.key}.webm`} type="video/webm" />
+          <source src={`/motion/loop-${c.key}.mp4`} type="video/mp4" />
+        </video>
+        <p className="t-scene">{c.scene}</p>
+        <button className="toggle" type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>
+          What’s included
+          <img src="/images/chevron.svg" alt="" width={14} height={14} />
+        </button>
+        <ul className="benefits" id={id} hidden={!open}>
+          {c.items.map((b) => (
+            <li key={b.text}><span>{b.text}{b.principal && <span className="tag">Principal</span>}</span></li>
+          ))}
+        </ul>
+      </div>
+    </article>
+  );
+}
+
+export default function Categories({ items }: { items: Category[] }) {
+  const videos = useRef<HTMLVideoElement[]>([]);
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let ticking = false;
+    const pick = () => {
+      ticking = false;
+      const mid = window.innerHeight / 2;
+      let best: HTMLVideoElement | null = null; let bestD = Infinity;
+      for (const v of videos.current) {
+        const r = v.getBoundingClientRect();
+        if (r.bottom > 0 && r.top < window.innerHeight) { const d = Math.abs((r.top + r.bottom) / 2 - mid); if (d < bestD) { bestD = d; best = v; } }
+      }
+      for (const v of videos.current) {
+        if (v === best) { if (v.paused) { v.preload = 'auto'; v.play().catch(() => {}); } }
+        else if (!v.paused) v.pause();
+      }
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(pick); } };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    pick();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  const register = (v: HTMLVideoElement | null) => { if (v && !videos.current.includes(v)) videos.current.push(v); };
+  return (
+    <div className="cats">
+      {items.map((c, i) => <CategoryRow key={c.key} c={c} initiallyOpen={i === 0} registerVideo={register} />)}
+    </div>
+  );
+}

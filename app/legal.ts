@@ -1,0 +1,33 @@
+// Draft for legal review. Mirrors the Privacy and Terms frames on Landing page: dev in Figma.
+export const privacy: [string, string][] = [
+['Who we are','Menzura (“the house”, “we”) is a private members’ house that makes clothing for its members. It is operated by [legal entity name, to be confirmed], a company incorporated in Canada. Questions about your information can be sent to privacy@menzura.co.'],
+['What we collect','When you apply: your name, email, city, and anything else you choose to share, such as your phone number, how you heard of us, a sponsor number and what you need your clothes to do.\nWhen you are a member: your measurements and fit notes, your preferences, the pieces made for you, occasions and calendar details you choose to share, your delivery addresses, and your assistant’s contact details if you name one.\nScan photographs taken to produce your measurements, and portraits from your portrait sessions.\nPayments are handled by our payment processor. We do not store full card numbers.\nOn this website we use limited, cookie-free analytics.'],
+['How we use it','To review your application, make and deliver your pieces, plan your wardrobe with your stylist, arrange member evenings, privileges and portrait sessions, keep in touch with you, and meet our legal obligations. We never sell your information and never use it for advertising.'],
+['Your scan photographs','Your photographs are used only to produce your measurements and are then deleted [within a period to be confirmed]. Your measurements are kept in your private record.'],
+['Who we share it with','Only with those who help us look after you, and only what they need: our tailoring workshop (your name, measurements and order details), photographers for your portrait sessions, couriers, our payment processor, partner hotels and restaurants when you ask us to arrange a stay or a table, and the providers that host our systems and send our emails. Each is bound by confidentiality and data protection terms. We may also disclose information where the law requires it.'],
+['Your portraits','Your portraits are yours to use. The house never publishes them, or your name, without your written consent.'],
+['Where it is stored','Applications are stored in our Google Workspace account [storage region to be confirmed]. Member records are stored with our service providers, primarily in Canada [to be confirmed]. Some providers may process information in other countries, with appropriate safeguards in place.'],
+['How long we keep it','Applications that do not lead to membership are deleted after [12 months, to be confirmed]. Member records are kept for as long as you are a member and for [a period to be confirmed] afterwards, unless you ask us to delete them sooner. Scan photographs are deleted once your measurements are produced.'],
+['Your choices','You can ask to see, correct or delete your information, or withdraw your consent, at any time by writing to privacy@menzura.co. You may also complain to the Office of the Privacy Commissioner of Canada or the data protection authority where you live.'],
+['Security','We protect your information with access controls, encryption in transit and at rest, and confidentiality obligations for everyone who handles it.'],
+['Members under 18','Menzura is not intended for anyone under 18, and we do not knowingly collect their information.'],
+['Changes','If we change this policy, we will update this page and tell members directly about any significant change.'],
+];
+export const terms: [string, string][] = [
+['About these terms','These terms explain how membership of Menzura works. If you are offered membership, you will receive a membership agreement, which takes precedence over this summary.'],
+['Membership','Membership is by invitation. Anyone may apply to be considered, and the house may extend an invitation or decline. Membership of the house is limited to 500.'],
+['Fees','Membership is paid yearly, in advance, in US dollars. The 2027 membership fee for The Member starts at USD 24,000. The terms of The Principal are offered personally. Fees for new members may change each year; your fee does not change during a membership year you have paid for.'],
+['What membership includes','Membership includes what is described to you when it is offered, including a piece made to your measure each month from the current collection. Each month you may approve, swap or hold your piece. Held pieces carry into the next collection [within limits to be confirmed].'],
+['Pausing','You may pause your membership for up to three months a year. Your membership year is extended by the length of the pause.'],
+['Your account','You may add funds to your account to order further pieces at the house’s prices. Account credit is valid for 24 months and is not refundable as cash [to be confirmed].'],
+['Shipping and duties','Shipping and any duties or taxes are charged at cost and shown before you approve an order.'],
+['The fit commitment','If a piece does not fit as it should, tell your stylist [within a period to be confirmed] and we will alter or remake it at no cost to you.'],
+['Cancellation and refunds','[To be set with counsel. For example: a full refund if you cancel within 14 days of joining and before your first piece is cut; after that, fees are not refundable, and pieces already owed to you are still delivered.]'],
+['Renewal','Renewal is offered to you personally each year. Your membership does not renew automatically without your agreement.'],
+['Discretion and conduct','Members are asked to respect the privacy of other members and guests. The house may end a membership for serious breach of these terms or of that discretion [refund terms to be confirmed].'],
+['Designs','All Menzura designs, patterns and names belong to Menzura.'],
+['Privileges and partners','Privileges at partner hotels and restaurants depend on each partner’s availability and may change.'],
+['Liability','To the extent permitted by law, the house’s liability is limited to the fees you have paid for the current membership year.'],
+['Governing law','These terms are governed by the laws of Ontario, Canada.'],
+['Contact','Questions about membership can be sent to house@menzura.co.'],
+];
