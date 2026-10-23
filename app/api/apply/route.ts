@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { createSign } from 'node:crypto';
 
 export const runtime = 'nodejs';
@@ -13,7 +13,10 @@ function rateLimited(ip: string) {
   return recent.length > 5;
 }
 
+let cachedToken: { value: string; expires: number } | null = null;
+
 async function googleToken() {
+  if (cachedToken && cachedToken.expires > Date.now() + 60_000) return cachedToken.value;
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL!;
   const key = (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
   const now = Math.floor(Date.now() / 1000);
@@ -22,7 +25,9 @@ async function googleToken() {
   const sig = createSign('RSA-SHA256').update(unsigned).sign(key, 'base64url');
   const res = await fetch('https://oauth2.googleapis.com/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: `${unsigned}.${sig}` }) });
   if (!res.ok) throw new Error(`token ${res.status}`);
-  return (await res.json()).access_token as string;
+  const json = await res.json();
+  cachedToken = { value: json.access_token as string, expires: Date.now() + (json.expires_in ?? 3600) * 1000 };
+  return cachedToken.value;
 }
 
 async function appendRow(row: string[]) {
@@ -33,9 +38,10 @@ async function appendRow(row: string[]) {
   if (!res.ok) throw new Error(`sheets ${res.status}`);
 }
 
-async function sendEmail(to: string, subject: string, text: string, replyTo?: string) {
-  if (!process.env.RESEND_API_KEY || !to) return;
-  await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ from: process.env.FROM_EMAIL || 'Menzura <house@menzura.co>', to: [to], subject, text, ...(replyTo ? { reply_to: replyTo } : {}) }) });
+async function sendEmail(kind: string, to: string, subject: string, text: string, replyTo?: string) {
+  if (!process.env.RESEND_API_KEY || !to) { console.error(`apply: ${kind} email not sent, Resend not configured`); return; }
+  const res = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ from: process.env.FROM_EMAIL || 'Menzura <house@menzura.co>', to: [to], subject, text, ...(replyTo ? { reply_to: replyTo } : {}) }) });
+  if (!res.ok) console.error(`apply: ${kind} email failed with status ${res.status}`); // status only, never the address
 }
 
 export async function POST(req: Request) {
@@ -54,11 +60,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false }, { status: 503 });
   }
   const row = [new Date().toISOString(), a.name, a.email, a.city, a.phone, a.tier, a.heard, a.sponsor, a.needs, 'Applied', '', '', '', a.source].map(safeCell);
-  try { await appendRow(row); } catch (err) { console.error('apply: sheet append failed', err); return NextResponse.json({ ok: false }, { status: 502 }); }
+  try { await appendRow(row); } catch (err) { console.error('apply: sheet append failed', (err as Error).message); return NextResponse.json({ ok: false }, { status: 502 }); }
 
-  await Promise.allSettled([
-    sendEmail(process.env.OPERATOR_EMAIL || '', `New application: ${a.name}, ${a.city}`, `A new application is in the applications sheet.\n\nName: ${a.name}\nEmail: ${a.email}\nCity: ${a.city}\nPhone: ${a.phone || '(not given)'}\nMembership: ${a.tier}\nHeard: ${a.heard || '(not given)'}\nSponsor: ${a.sponsor || '(none)'}\nNeeds: ${a.needs || '(not given)'}\nSource: ${a.source}`, a.email),
-    sendEmail(a.email, 'Your application is with the house', `Dear ${a.name.split(' ')[0]},\n\nThank you. Your application is with the house.\n\nThe house reviews every application personally. Within one business day, a stylist will write to you by email. If membership is offered, you will be invited to a short welcome conversation and your first fitting.\n\nThe house\nMenzura`),
-  ]);
+  // Respond as soon as the row is stored; emails go out after the response (Figma: respond within 400ms).
+  after(() => Promise.allSettled([
+    sendEmail('operator', process.env.OPERATOR_EMAIL || '', `New application: ${a.name}, ${a.city}`, `A new application is in the applications sheet.\n\nName: ${a.name}\nEmail: ${a.email}\nCity: ${a.city}\nPhone: ${a.phone || '(not given)'}\nMembership: ${a.tier}\nHeard: ${a.heard || '(not given)'}\nSponsor: ${a.sponsor || '(none)'}\nNeeds: ${a.needs || '(not given)'}\nSource: ${a.source}`, a.email),
+    sendEmail('applicant', a.email, 'Your application is with the house', `Dear ${a.name.split(' ')[0]},\n\nThank you. Your application is with the house.\n\nThe house reviews every application personally. Within one business day, a stylist will write to you by email. If membership is offered, you will be invited to a short welcome conversation and your first fitting.\n\nThe house\nMenzura`),
+  ]));
   return NextResponse.json({ ok: true });
 }
